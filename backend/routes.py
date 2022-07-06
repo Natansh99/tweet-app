@@ -1,4 +1,4 @@
-from __main__ import db, app
+from __main__ import db, application
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import cross_origin
@@ -23,24 +23,24 @@ import logging
 
 
 
-logging.basicConfig(filename = 'tweet-app.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.basicConfig(filename = 'tweet-application.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
-jwt = JWTManager(app) # initialize JWTManager
-app.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1) # define the life span of the token
+jwt = JWTManager(application) # initialize JWTManager
+application.config['JWT_SECRET_KEY'] = 'Your_Secret_Key'
+application.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1) # define the life span of the token
 
-@app.route("/", methods=['GET'])
+@application.route("/", methods=['GET'])
 @cross_origin()
 def myfun():
 
-    app.logger.info('HEALTH CHECK OK!!!!')
+    application.logger.info('HEALTH CHECK OK!!!!')
     print("reached 1st url")
     return {"msg":"success"}
 
 
 
-@app.route('/tweets/register',methods=['GET','POST'])
+@application.route('/tweets/register',methods=['GET','POST'])
 @cross_origin()
 def register():
 
@@ -63,22 +63,22 @@ def register():
             new_user = User_mgmt(email=email, firstname=firstname,lastname=lastname,password=password, loginid=loginid, contact=contact)
             id = db.session.add(new_user)
             db.session.commit()
-            app.logger.info("USER CREATED SUCCESSFULLY! {id}")
+            application.logger.info("USER CREATED SUCCESSFULLY! {id}")
             return {"msg":new_user.loginid}
     except Exception as e:
-        app.logger.error("User Could not be created !", traceback.format_exc())
+        application.logger.error("User Could not be created !", traceback.format_exc())
         return {"error":"User Not Created"}, 400
     return {"error":"Could not register user"}
 
 
 
 
-@app.route('/login', methods=['POST'])
+@application.route('/login', methods=['POST'])
 @cross_origin()
 def login():
     try:
         print(request.data)
-        app.logger.info(f"API : /login triggered! ")
+        application.logger.info(f"API : /login triggered! ")
         print(ast.literal_eval(request.data.decode()))
         if request.data:
             request.data = ast.literal_eval(request.data.decode(encoding="utf-8"))
@@ -98,22 +98,22 @@ def login():
                     access_token = create_access_token(identity=user_from_db.loginid) # create jwt token
                     refresh_token = create_refresh_token(identity=user_from_db.loginid)
                     # print(access_token)
-                    app.logger.info(f"Login Successfull by user {loginid}")
+                    application.logger.info(f"Login Successfull by user {loginid}")
                     return {"token":access_token, "refreshToken":refresh_token, 'loginid':user_from_db.loginid, "user_id":user_from_db.id}, 200
-                app.logger.warn("Credentials do not match")
+                application.logger.warn("Credentials do not match")
                 return {"error":"user creds do not match"}, 401
     except Exception as e:
-        app.logger.error("USER NOT Registered", traceback.format_exc())
+        application.logger.error("USER NOT Registered", traceback.format_exc())
     return {"error":"invalid data"}
 
-@app.route("/api/checkiftokenexpire", methods=["POST"])
+@application.route("/api/checkiftokenexpire", methods=["POST"])
 @jwt_required()
 @cross_origin()
 def check_if_token_expire():
     return jsonify({"success": True})
 
 
-@app.route("/api/refreshtoken", methods=["POST"])
+@application.route("/api/refreshtoken", methods=["POST"])
 @jwt_required(refresh=True)
 @cross_origin()
 def refresh():
@@ -121,7 +121,7 @@ def refresh():
     token = create_access_token(identity=identity)
     return jsonify({"token": token})
 
-@app.route("/api/logout/access", methods=["POST"])
+@application.route("/api/logout/access", methods=["POST"])
 @jwt_required()
 @cross_origin()
 def access_logout():
@@ -134,7 +134,7 @@ def access_logout():
         print(e)
         return {"error": e.message}
 
-@app.route("/api/logout/refresh", methods=["POST"])
+@application.route("/api/logout/refresh", methods=["POST"])
 @jwt_required()
 @cross_origin()
 def refresh_logout():
@@ -147,14 +147,14 @@ def refresh_logout():
         print(e)
         return {"error": e.message}
 
-@app.route("/tweets/<loginid>/add", methods=['POST'])
+@application.route("/tweets/<loginid>/add", methods=['POST'])
 @jwt_required()
 @cross_origin()
 def create_tweet(loginid):
     try:
         
         current_user_loginid = get_jwt_identity()
-        app.logger.info(f"API : /tweets/all by user : {current_user_loginid}")
+        application.logger.info(f"API : /tweets/all by user : {current_user_loginid}")
         # print(current_user_loginid)
         
         x = datetime.datetime.now()
@@ -178,20 +178,20 @@ def create_tweet(loginid):
             to_timeline = Timeline(post_id=post.id)
             db.session.add(to_timeline)
             db.session.commit()
-            app.logger.info("Tweet Created and store in DB")
+            application.logger.info("Tweet Created and store in DB")
             return jsonify({"success": "true"})
     except Exception as e:
-        app.logger.error("TWEET COULD NOT BE CREATED",traceback.format_exc())
+        application.logger.error("TWEET COULD NOT BE CREATED",traceback.format_exc())
         return {"error":"tweet could not be created!"}, 500
 
-@app.route("/tweets/all", methods=['GET'])
+@application.route("/tweets/all", methods=['GET'])
 @jwt_required()
 @cross_origin()
 def get_all_tweets():
     try:
 
         current_user_loginid = get_jwt_identity()
-        app.logger.info(f"API : /tweets/all by user : {current_user_loginid}")
+        application.logger.info(f"API : /tweets/all by user : {current_user_loginid}")
         print(current_user_loginid)
 
         # all_tweets = Post.query.all()
@@ -200,11 +200,11 @@ def get_all_tweets():
         # print(all_tweets)
         # tweets = Post.query.all()
         l2 = get_all_tweets_base(current_user_loginid)
-        app.logger.info("Successfully fetched the tweets")
+        application.logger.info("Successfully fetched the tweets")
     
         return {"tweets":l2 }
     except Exception as e:
-        app.logger.error("Could not fetch tweet: \n"+traceback.format_exc())
+        application.logger.error("Could not fetch tweet: \n"+traceback.format_exc())
         return {"error": traceback.format_exc()}
 
 def get_all_tweets_base(current_user_loginid):
@@ -227,17 +227,17 @@ def get_all_tweets_base(current_user_loginid):
         l2 = [{"id": i.id,"loginid":i.loginid, "title":i.tweet_title, "tweet": i.tweet, "timestamp": i.stamp, "isOwner":i.loginid == current_user_loginid, "retweet": [{"loginid": k['loginid'], "retweet_text": k['retweet_text']} for k in retweet_data if k['tweet_id']==i.id],"like_count":i.like_count, "already_liked": True if i.id in tweet_id_col else False} for i in result]
         return l2
     except Exception as e:
-        app.logger.error("Could not fetch tweet: \n"+traceback.format_exc())
+        application.logger.error("Could not fetch tweet: \n"+traceback.format_exc())
         return {"error": traceback.format_exc()}
 
 
 
-@app.route("/tweets/users/all", methods=['GET'])
+@application.route("/tweets/users/all", methods=['GET'])
 @jwt_required()
 @cross_origin()
 def get_all_users():
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API : /tweets/users/all by user : {current_user_loginid}")
+    application.logger.info(f"API : /tweets/users/all by user : {current_user_loginid}")
     # print(current_user_loginid)
 
     all_users = Post.query.all()
@@ -252,12 +252,12 @@ def get_all_users():
 
     
 
-@app.route("/tweets/<username>/delete/<id>", methods=['DELETE'])
+@application.route("/tweets/<username>/delete/<id>", methods=['DELETE'])
 @jwt_required()
 @cross_origin()
 def delete_tweet(username, id):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API : /tweets/<username>/delete/<id> by user: {current_user_loginid}")
+    application.logger.info(f"API : /tweets/<username>/delete/<id> by user: {current_user_loginid}")
     try:
         if current_user_loginid == username:
 
@@ -271,19 +271,19 @@ def delete_tweet(username, id):
                 db.session.commit()
                 result = Post.query.join(Timeline, Post.id == Timeline.post_id).add_columns(Timeline.id).filter(Post.id == Timeline.post_id)
                 # check timeline table 
-                app.logger.info("Tweet Successfully deleted ")
+                application.logger.info("Tweet Successfully deleted ")
                 return {"msg":f"Tweet {id} for the user : {username} deleted"}
     except Exception as e:
-        app.logger.error("Cannot delete the Tweet: \n"+e.with_traceback())
+        application.logger.error("Cannot delete the Tweet: \n"+e.with_traceback())
     return {"error":"Cannot delete another tweet"}
 
 # post_id refers to the post which needs to be retweeted
-@app.route('/retweet/<post_id>',methods=['GET','POST'])
+@application.route('/retweet/<post_id>',methods=['GET','POST'])
 @jwt_required()
 @cross_origin()
 def retweet(post_id):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API : /retweet/<post_id> by user: {current_user_loginid}")
+    application.logger.info(f"API : /retweet/<post_id> by user: {current_user_loginid}")
     if request.form:    
         
         whose_post = request.form['loginid']
@@ -310,7 +310,7 @@ def retweet(post_id):
                 print(to_timeline.retweet_id)
                 db.session.add(to_timeline)
                 db.session.commit()
-                app.logger.info(f"RETWEET SUCCESSFUL by USER: {current_user_loginid} of {whose_post}")
+                application.logger.info(f"RETWEET SUCCESSFUL by USER: {current_user_loginid} of {whose_post}")
                 return {"msg": f"{current_user_loginid} Retweeted @ {whose_post}"}
 
     return {"error":"could not retweet"}
@@ -319,12 +319,12 @@ def retweet(post_id):
 
 
 
-@app.route("/tweets/<loginid>", methods=['GET'])
+@application.route("/tweets/<loginid>", methods=['GET'])
 @jwt_required()
 @cross_origin()
 def get_all_tweets_of_a_user(loginid):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API :/tweets/<loginid> by user: {current_user_loginid}")
+    application.logger.info(f"API :/tweets/<loginid> by user: {current_user_loginid}")
     try:
 
 
@@ -346,16 +346,16 @@ def get_all_tweets_of_a_user(loginid):
         #                 # j+=1
         # return {"data":user_tweets,"total_records":len(user_tweets)}
     except Exception as e:
-        app.logger.error("ERROR FETCHING DATA FROM DB: \n"+ e.with_traceback())
+        application.logger.error("ERROR FETCHING DATA FROM DB: \n"+ e.with_traceback())
         return {"error": "Could Not find any Tweet"}
 
 
-@app.route("/tweets/user/search/<loginid>", methods=['GET'])
+@application.route("/tweets/user/search/<loginid>", methods=['GET'])
 @jwt_required()
 @cross_origin()
 def search_by_username(loginid):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API :/tweets/<loginid> by user: {current_user_loginid}")
+    application.logger.info(f"API :/tweets/<loginid> by user: {current_user_loginid}")
     try:
 
         users = User_mgmt.query.filter(User_mgmt.loginid.ilike(f"%{loginid}%")).all()
@@ -374,13 +374,13 @@ def search_by_username(loginid):
 
         return {"data":user_list , "users_found": len(user_tweets)}
     except Exception as e:
-        app.logger.error("Could not retreive Tweet: "+ e.with_traceback())
+        application.logger.error("Could not retreive Tweet: "+ e.with_traceback())
         return {"error": "Error Occured! Check logs for the details"}
 
-@app.route("/tweets/forgot" , methods=['GET'])
+@application.route("/tweets/forgot" , methods=['GET'])
 @cross_origin()
 def search_by_full_username():
-    app.logger.info("API: /tweets/forgot triggered!")
+    application.logger.info("API: /tweets/forgot triggered!")
     try:
 
         if request.form:
@@ -391,11 +391,11 @@ def search_by_full_username():
                 return {"forgot-password":f"http://localhost:5000/tweets/{user_found.loginid}/forgot"}
         return {"error":"User does not exist"}
     except Exception as e:
-        app.logger.error("Error Occured! \n"+e.with_traceback())
+        application.logger.error("Error Occured! \n"+e.with_traceback())
         return {"error":"Error Occured see logs for details"}
 
 
-@app.route("/tweets/<loginid>/forgot" , methods=['PUT'])
+@application.route("/tweets/<loginid>/forgot" , methods=['PUT'])
 @cross_origin()
 def reset_password(loginid):
     try:
@@ -410,16 +410,16 @@ def reset_password(loginid):
             return {"msg":"password updated"}
         return {"error":"password could not be updated!"}
     except Exception as e:
-        app.logger.error("Error Occured, Check Logs for detail\n"+e.with_traceback())
+        application.logger.error("Error Occured, Check Logs for detail\n"+e.with_traceback())
 
 
 
-@app.route("/tweets/<username>/like", methods=['GET', 'POST'])
+@application.route("/tweets/<username>/like", methods=['GET', 'POST'])
 @jwt_required()
 @cross_origin()
 def like_tweet(username):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API: /tweets/<username>/like by user: {current_user_loginid}")
+    application.logger.info(f"API: /tweets/<username>/like by user: {current_user_loginid}")
     try:
         # if request.data:
         #     request.data = ast.literal_eval(request.data.decode(encoding="utf-8"))
@@ -441,16 +441,16 @@ def like_tweet(username):
             # return {"liked": str(like.to_dict())}
         return {"error":"invalid User"}
     except Exception as e:
-        app.logger.error("Error Occured, Check logs for detail\n"+e.with_traceback())
+        application.logger.error("Error Occured, Check logs for detail\n"+e.with_traceback())
         return {"error":"Something went wrong!"}
 
 
-@app.route("/tweets/<username>/update/<post_id>", methods=['PUT'])
+@application.route("/tweets/<username>/update/<post_id>", methods=['PUT'])
 @cross_origin()
 @jwt_required()
 def update_tweet(username, post_id):
     current_user_loginid = get_jwt_identity()
-    app.logger.info(f"API: /tweets/<username>/update/<post_id> by user: {current_user_loginid}")
+    application.logger.info(f"API: /tweets/<username>/update/<post_id> by user: {current_user_loginid}")
     try:
 
         if current_user_loginid == username:
@@ -472,16 +472,16 @@ def update_tweet(username, post_id):
 
                 return {"msg":"Post updated successfully!"}
     except Exception as e:
-        app.logger.error("Something Went Wrong! Check Logs for error!\n"+e.with_traceback())
+        application.logger.error("Something Went Wrong! Check Logs for error!\n"+e.with_traceback())
     
     return {"error":"Can not update!"}
 
-@app.route("/deleteAccount" , methods=['DELETE'])
+@application.route("/deleteAccount" , methods=['DELETE'])
 @cross_origin()
 @jwt_required()
 def delete_account():
     current_user_loginid = get_jwt_identity()
-    app.logger.info("API: /tweets/deleteaccount triggered!")
+    application.logger.info("API: /tweets/deleteaccount triggered!")
     try:
         user = User_mgmt.query.filter(User_mgmt.loginid == current_user_loginid).first()
 
@@ -496,5 +496,5 @@ def delete_account():
         db.session.commit()
         return {"msg":f"user {current_user_loginid} deleted"}
     except Exception as e:
-        app.logger.error("Error Occured! \n"+e.with_traceback())
+        application.logger.error("Error Occured! \n"+e.with_traceback())
         return {"error":"Error Occured see logs for details"}

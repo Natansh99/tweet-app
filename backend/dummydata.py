@@ -1,11 +1,11 @@
 # from __main__ import db
 
-# import app
+# import application
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from app import app
-from app import db
+from backend.application import application
+from backend.application import db
 from modals import Post, Timeline
 
 from time import sleep
