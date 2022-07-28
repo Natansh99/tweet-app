@@ -36,7 +36,7 @@ class Register extends Component {
     render() {
         return (
             <div className="w3-card-4" style={{margin: "2rem"}}>
-                <div className="w3-container w3-blue w3-center w3-xlarge">
+                <div className="w3-container w3-red w3-center w3-xlarge">
                     REGISTER
                 </div>
                 <div className="w3-container">
@@ -96,7 +96,7 @@ class Register extends Component {
                         </p>
                         
                         <p>
-                            <button type="submit" class="w3-button w3-blue">
+                            <button type="submit" class="w3-button w3-red">
                                 Register
                             </button>
                             {this.state.register && <p>You're registered!</p>}

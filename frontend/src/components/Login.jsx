@@ -27,7 +27,7 @@ class Login extends Component {
     render() {
         return (
             <div className="w3-card-4" style={{margin: "2rem"}}>
-                <div className="w3-container w3-blue w3-center w3-xlarge">
+                <div className="w3-container w3-red w3-center w3-xlarge">
                     LOGIN
                 </div>
                 <div className="w3-container">
@@ -38,7 +38,7 @@ class Login extends Component {
                     )}
                     <form onSubmit={this.login}>
                         <p>
-                            <label htmlFor="loginid">Email</label>
+                            <label htmlFor="loginid">Login ID</label>
                             <input
                                 type="text"
                                 className="w3-input w3-border"
@@ -54,7 +54,7 @@ class Login extends Component {
                             />
                         </p>
                         <p>
-                            <button type="submit" className="w3-button w3-blue">
+                            <button type="submit" className="w3-button w3-red">
                                 Login
                             </button>
                         </p>

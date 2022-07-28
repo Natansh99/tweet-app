@@ -1,1 +1,1 @@
-export const base_url = "http://backend-prod2.us-west-1.elasticbeanstalk.com";
+export const base_url = "http://tweetapp-backend.ap-south-1.elasticbeanstalk.com/";

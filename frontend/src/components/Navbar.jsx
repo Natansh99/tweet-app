@@ -7,7 +7,7 @@ function Navbar(props) {
     
     const onUserSearch = (searchloginid) => {
         // props.searchloginid = searchloginid
-        console.log("hamara bajaj",searchloginid)
+        // console.log("hamara bajaj",searchloginid)
 
         props.loginData(searchloginid);
         // loginInfo(event);
@@ -32,7 +32,7 @@ function Navbar(props) {
     // const {onSearch} = this.props;
     return (
 
-        <div className="w3-bar w3-black">
+        <div className="w3-bar w3-red">
             <a className="w3-bar-item w3-button" href="/">
                 Tweet-App
             </a>

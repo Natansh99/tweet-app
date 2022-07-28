@@ -61,7 +61,7 @@ class UserSettings extends React.Component {
     render() {
         return (<div className="w3-container" style={{margin: "3rem"}}>
             <div className="w3-card w3-border w3-round-large">
-                <header className="w3-container w3-xlarge w3-blue"
+                <header className="w3-container w3-xlarge w3-red"
                         style={{padding: "0.5rem", paddingLeft: "3rem"}}>Settings
                 </header>
                 <div className="w3-container">
@@ -82,7 +82,7 @@ class UserSettings extends React.Component {
                     {this.state.currentSetting === "cpwd" && <div style={{margin: "1rem"}}>
                         <h1 className="w3-xxlarge">Change password</h1>
                         <hr className="w3-border-top w3-border-black"/>
-                        <button className="w3-button w3-blue"
+                        <button className="w3-button w3-red"
                                 onClick={() => this.setState({currentSetting: "main"})}>&laquo; Back
                         </button>
                         <form onSubmit={this.changePassword}>
@@ -95,14 +95,14 @@ class UserSettings extends React.Component {
                                 <input type="password" id="npassword" className="w3-input w3-border"/>
                             </p>
                             <p>
-                                <button type="submit" className="w3-button w3-blue">Submit</button>
+                                <button type="submit" className="w3-button w3-red">Submit</button>
                             </p>
                         </form>
                     </div>}
                     {this.state.currentSetting === "del" && <div style={{margin: "1rem"}}>
                         <h1 className="w3-xxlarge w3-text-red">Delete account</h1>
                         <hr className="w3-border-top w3-border-black"/>
-                        <button className="w3-button w3-blue"
+                        <button className="w3-button w3-red"
                                 onClick={() => this.setState({currentSetting: "main"})}>&laquo; Back
                         </button>
                         <p>

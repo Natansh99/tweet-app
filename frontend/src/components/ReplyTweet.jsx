@@ -54,7 +54,7 @@ function ReplyTweet(props) {
 
     return (<div className="replyTweet-Modal w3-animate-opacity" id={"replyTweet"+props.replyItem}>
         <div className="replyTweet-Modal-content replyTweet-Modal-card">
-            <header className="replyTweet-Modal-container replyTweet-Modal-blue">
+            <header className="replyTweet-Modal-container replyTweet-Modal-red">
                 <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
                     document.getElementById("replyTweet" + props.replyItem).style.display = "none"
                 }}>X</span>
@@ -89,7 +89,7 @@ function ReplyTweet(props) {
                     </p>
 
                     <p>
-                        <button type="submit" className="w3-button w3-blue">Retweet</button>
+                        <button type="submit" className="w3-button w3-red">Retweet</button>
                     </p>
                 </div>
             </form>

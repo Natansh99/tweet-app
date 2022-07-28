@@ -48,7 +48,7 @@ class AddTweet extends React.Component {
     render() {
         return (<div className="w3-modal w3-animate-opacity" id="addTweet">
             <div className="w3-modal-content w3-card">
-                <header className="w3-container w3-blue">
+                <header className="w3-container w3-red">
                 <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
                     document.getElementById("addTweet").style.display = "none"
                 }}>X</span>
@@ -87,7 +87,7 @@ class AddTweet extends React.Component {
                         </p>
 
                         <p>
-                            <button type="submit" className="w3-button w3-blue">Post</button>
+                            <button type="submit" className="w3-button w3-red">Post</button>
                         </p>
                     </div>
                 </form>

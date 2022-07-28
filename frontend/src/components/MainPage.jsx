@@ -130,7 +130,7 @@ class MainPage extends React.Component {
                     className="w3-container w3-jumbo"
                     style={{margin: "3rem", paddingLeft: "1rem"}}>
                     <h1>Tweets</h1>
-                    <button className="w3-button w3-blue w3-large" onClick={() => {
+                    <button className="w3-button w3-red w3-large" onClick={() => {
                         document.getElementById("addTweet").style.display = "block"
                     }}>Add tweet
                     </button>
@@ -140,7 +140,7 @@ class MainPage extends React.Component {
                 {this.state.selectedUsername !== '' && 
                 <div>
                     <p className="w3-xlarge w3-opacity">Showing Comments for {this.state.selectedUsername}</p>
-                    <button className="w3-button w3-blue w3-large" onClick={() => {
+                    <button className="w3-button w3-red w3-large" onClick={() => {
                         this.componentDidMount()
                     }}>Clear User Tweets
                     </button>
